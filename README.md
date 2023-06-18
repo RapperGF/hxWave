@@ -1,24 +1,31 @@
-# hxWave
-A multiplatform media library built with HxCodecPlus and LibVLC++
+<h1> hxWave </h1>
+<h3> A multiplatform media library built with HxCodecPlus and LibVLC++ </h3>
+
 --------------------------
 
-designed to seamlessly integrate with Haxe, HaxeFlixel, OpenFL, and Lime
+Designed to seamlessly integrate with Haxe, HaxeFlixel, OpenFL, and Lime
 
 [libVLC](https://www.videolan.org/vlc/libvlc.html), allows hxWave to play many media codecs while streaming the data to haxe or playing directly in the window container. 
+
+--------------------------
 
 ## Getting Started With HxWave!
 
 ### 1. Installing the library
-Install the library by running the following Haxelib command:
-
+You can install the library by running this command:
 ```
-haxelib git hxWave (https://github.com/RapperGF/hxWave)
+haxelib install hxWave
+```
+
+but if you wish to have the latest and greatest changes along with new upcoming features, run this instead:
+```
+haxelib git hxWave https://github.com/RapperGF/hxWave
 ```
 
 ### 2. Include the library
 add it to the Project.xml file:
 ```xml
-<haxelib name="hxWave"/>
+<haxelib name="hxWave" />
 ```
 
 --------------------------
