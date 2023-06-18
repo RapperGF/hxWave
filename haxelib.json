@@ -1,0 +1,26 @@
+{
+	"name":"HxWave",
+	"url":"https://github.com/RapperGF/hxWave",
+	"license":"MPL-2.0 license",
+	"tags":[
+		"audio",
+		"video",
+		"haxeflixel",
+		"openfl",
+		"windows",
+		"mac",
+		"linux",
+		"android"
+	],
+	"description":"A multiplatform media library designed to seamlessly integrate with Haxe, OpenFL, and Lime",
+	"version":"1.0.0",
+	"releasenote":"The initial version",
+	"contributors":[
+		"RapperGF"
+	],
+	"dependencies":{
+		"lime":"",
+		"openfl":""
+	},
+	"main":"Native"
+}

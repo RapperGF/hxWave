@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="include.xsd"?>
+<extension>
+
+	<!--<assets path="NOTICE-LINUX.md" rename='NOTICE.txt' if="linux" />-->
+
+	<assets path="include/Mac" rename="../MacOS" if="mac" />
+	<assets path="include/Windows" rename='' if="windows" />
+
+	<source path="src" />
+
+	<ndll name="c++_shared" if="android" />
+	<ndll name="vlc" if="android" />
+
+</extension>

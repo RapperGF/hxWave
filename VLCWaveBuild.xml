@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="LibVLCBuild.xsd"?>
+<xml>
+	<set name="PROJECT_DIR" value="${this_dir}" />
+	<!--<set name="PROJECT_DIR" value="${haxelib:hxCodecPlus}" /> for embeding lib--> 
+	
+	<files id="haxe">
+		<compilervalue name="-I" value="${PROJECT_DIR}/lib/vlc/include/" />
+		<compilervalue name="-I" value="${PROJECT_DIR}/lib/vlc/src/" />
+	</files>
+
+	<files id="__main__">
+		<compilervalue name="-I" value="${PROJECT_DIR}/lib/vlc/include/" />
+		<compilervalue name="-I" value="${PROJECT_DIR}/lib/vlc/src/" />
+	</files>
+
+	<target id="haxe" tool="linker" if="android">
+		<lib name="${PROJECT_DIR}/ndll/Android/libvlc-v7.so" if="HXCPP_ARMV7" />
+		<lib name="${PROJECT_DIR}/ndll/Android/libvlc-64.so" if="HXCPP_ARM64" />
+	</target>
+
+	<target id="haxe" tool="linker" if="linux">
+		<lib name="${PROJECT_DIR}/lib/vlc/lib/Linux/libvlc.so.5" if="HXCPP_M64" />
+		<lib name="${PROJECT_DIR}/lib/vlc/lib/Linux/libvlccore.so.9" if="HXCPP_M64" />
+	</target>
+
+	<target id="haxe" tool="linker" if="mac">
+		<lib name="${PROJECT_DIR}/lib/vlc/lib/Mac/libvlc.5.dylib" if="HXCPP_M64" />
+		<lib name="${PROJECT_DIR}/lib/vlc/lib/Mac/libvlccore.7.dylib" if="HXCPP_M64" />
+	</target>
+
+	<target id="haxe" tool="linker" toolid="exe" if="windows">
+		<lib name="${PROJECT_DIR}/lib/vlc/lib/Windows/libvlc.lib" if="HXCPP_M64" />
+		<lib name="${PROJECT_DIR}/lib/vlc/lib/Windows/libvlccore.lib" if="HXCPP_M64" />
+	</target>
+</xml>
