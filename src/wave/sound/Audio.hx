@@ -6,6 +6,7 @@ import openfl.media.SoundTransform as Volume;
 import openfl.media.Sound;
 import openfl.utils.ByteArray;
 import _backend.JSHandle;
+import _backend.NativeHandle;
 //import _backend.NativeCodec;
 import haxe.io.Bytes;
 
@@ -55,6 +56,7 @@ class Audio extends Sound {
 	public override function play(startTime:Float = 0.0, loops:Int = 0, sndTransform:Volume = null) {
 		if(_stream) {
 			//stream.rate = 1.2;
+			trace(_stream);
 			stream.load(_url);
 			stream.rate = 1.2;
 		}

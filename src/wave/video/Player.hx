@@ -1,5 +1,6 @@
 package wave.video;
 import _backend.JSHandle;
+import _backend.NativeHandle;
 import haxe.io.Path;
 
 #if flixel

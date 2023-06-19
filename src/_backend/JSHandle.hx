@@ -73,9 +73,11 @@ class JSHandle {
 
     private inline function initAAC() {
         _net.play(_URL);
+        #if web
         @:privateAccess
 		_net.__video.preservesPitch = preservesPitch;
         _net.speed = _rate;
+        #end
     }
 
     private inline function initAVC() {

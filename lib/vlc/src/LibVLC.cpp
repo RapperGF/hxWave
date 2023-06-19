@@ -11,7 +11,7 @@ using namespace std;
 LibVLC::LibVLC(void)
 {
 	// HW decoding
-	const char* argv[] = {"--no-audio-time-stretch", "--avcodec-fast", "--avcodec-hw=dxva2.lo"}; // *Casually uses libVLC 2.0.x and fixes rate pitching. + performance*
+	const char* argv[] = {"--no-audio-time-stretch", "--avcodec-hurry-up", "--avcodec-hw=dxva2.lo"}; // *Casually uses libVLC 2.0.x and fixes rate pitching. + performance*
 	// No HW Decoding.
 	//const char* argv[] = {"--no-audio-time-stretch", "--avcodec-fast"};
 	//const char* argv[] = {"--no-video", "--no-audio-time-stretch"};
@@ -82,6 +82,51 @@ static unsigned format_setup(void **opaque, char *chroma, unsigned *width, unsig
 	return 1;
 }
 
+struct AudioContext {
+    unsigned char* audioData;
+    unsigned int audioDataSize;
+
+    AudioContext() : audioData(nullptr), audioDataSize(0) {}
+};
+AudioContext audioContext;
+
+static unsigned audio_setup(void** opaque, char* format, unsigned* rate, unsigned* channels)
+{
+  	// Set up the audio format parameters
+    // Modify the format, rate, and channels as per your requirements
+    strcpy(format, "S16N");
+    *rate = 44100;
+    *channels = 2;
+    
+    // Store the audio context pointer in opaque
+    *opaque = &audioContext;
+    
+    return 1;
+}
+
+void audioPlay(void* data, const void* samples, unsigned count, int64_t pts)
+{
+    // Process the audio samples here
+	AudioContext* audioContext = static_cast<AudioContext*>(data);
+    
+    // Process and store the audio samples
+    const unsigned char* audioData = static_cast<const unsigned char*>(samples);
+    const unsigned int dataSize = count * sizeof(int16_t);
+    
+    // Allocate memory for audio data
+    audioContext->audioData = new unsigned char[dataSize];
+    memcpy(audioContext->audioData, audioData, dataSize);
+    audioContext->audioDataSize = dataSize;
+}
+
+static unsigned audio_setup(void** opaque, char* format, unsigned* rate, unsigned* channels);
+
+// Implement the audio_setup callback function
+static int audio_setup_callback(void** opaque, char* format, unsigned* rate, unsigned* channels)
+{
+    return audio_setup(opaque, format, rate, channels);
+}
+
 void LibVLC::playFile(const char *path, bool loop, bool haccelerated, float pitch)
 {
 	ctx.pixeldata = 0;
@@ -96,7 +141,7 @@ void LibVLC::playFile(const char *path, bool loop, bool haccelerated, float pitc
 	 * @brief *Cassually fixes libVLC 2.0.x performance lag on playing media.*
 	 */
 	// Parse the media. 
-	std::future<void> asyncFunction = std::async(std::launch::deferred, libvlc_media_parse, libVlcMediaItem); // returns a future for asynchronous parsing on native.
+	//std::future<void> asyncFunction = std::async(std::launch::deferred, libvlc_media_parse, libVlcMediaItem); // returns a future for asynchronous parsing on native.
 	//libvlc_media_parse(libVlcMediaItem);
 
 	#ifdef ANDROID
@@ -129,6 +174,10 @@ void LibVLC::playFile(const char *path, bool loop, bool haccelerated, float pitc
 
 	libvlc_video_set_format_callbacks(libVlcMediaPlayer, format_setup, NULL);
 	libvlc_video_set_callbacks(libVlcMediaPlayer, lock, unlock, NULL, &ctx);
+	
+	libvlc_audio_set_format_callbacks(libVlcMediaPlayer, audio_setup_callback, nullptr);
+	//libvlc_audio_set_callbacks(libVlcMediaPlayer, audioPlay, nullptr, nullptr, nullptr, nullptr, nullptr);
+    //libvlc_audio_set_format_callbacks(mediaPlayer, nullptr, nullptr);
 
 	eventManager = libvlc_media_player_event_manager(libVlcMediaPlayer);
 
@@ -149,8 +198,8 @@ void LibVLC::playFile(const char *path, bool loop, bool haccelerated, float pitc
 	 * @brief *Cassually fixes libVLC 2.0.x performance lag on playing media.*
 	 * // IM SO HAPPI !!!! 
 	 */
-	std::future<int> asyncPlay = std::async(std::launch::deferred, libvlc_media_player_play, libVlcMediaPlayer); // returns a future for asynchronous parsing on native.
-	asyncPlay.wait();
+	std::future<int> asyncPlay = std::async(std::launch::async, libvlc_media_player_play, libVlcMediaPlayer); // returns a future for asynchronous parsing on native.
+	asyncPlay.get();
 	/** *Casually adds time and rate pitching on LIBVLC 2.0.x */
 	if (pitch != 1) {
 		std::future<int> _pitch = std::async(std::launch::deferred, libvlc_media_player_set_rate, libVlcMediaPlayer, pitch);
@@ -312,9 +361,19 @@ float LibVLC::getPosition()
 		return 0;
 }
 
+/*uint8_t *LibVLC::getPixelData()
+{
+	return ctx.pixeldata;
+}*/
+
 uint8_t *LibVLC::getPixelData()
 {
 	return ctx.pixeldata;
+}
+
+unsigned char* getAudioData()
+{
+    return audioContext.audioData;
 }
 
 void LibVLC::callbacks(const libvlc_event_t *event, void *ptr)
