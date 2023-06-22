@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="LibVLCBuild.xsd"?>
 <xml>
-	<!--<set name="PROJECT_DIR" value="${this_dir}" />-->
+	<pragma once="true" />
+	
 	<set name="PROJECT_DIR" value="${haxelib:hxWave}" /> 
 	
 	<files id="haxe">
@@ -20,8 +21,8 @@
 	</target>
 
 	<target id="haxe" tool="linker" if="linux">
-		<lib name="${PROJECT_DIR}/lib/vlc/lib/Linux/libvlc.so.5" if="HXCPP_M64" />
-		<lib name="${PROJECT_DIR}/lib/vlc/lib/Linux/libvlccore.so.9" if="HXCPP_M64" />
+		<lib name="-lvlc" />
+		<lib name="-lvlccore" />
 	</target>
 
 	<target id="haxe" tool="linker" if="mac">
